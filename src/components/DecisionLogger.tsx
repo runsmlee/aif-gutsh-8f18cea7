@@ -76,105 +76,107 @@ export default function DecisionLogger({ onCommit }: DecisionLoggerProps) {
   const confidenceColor = confidence <= 3 ? 'text-amber-500' : confidence <= 6 ? 'text-[var(--color-text-secondary)]' : 'text-primary';
 
   return (
-    <div className="bg-[var(--color-surface-elevated)] border border-[var(--color-border)] rounded-xl p-5 sm:p-6 shadow-sm space-y-4">
-      <div className="flex items-center gap-2 mb-1">
-        <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" aria-hidden="true"></div>
-        <h2 className="text-sm font-semibold text-[var(--color-text-primary)] font-mono">New commit</h2>
+    <div className="bg-[var(--color-surface-elevated)] border border-[var(--color-border)] rounded-xl overflow-hidden shadow-sm">
+      {/* Terminal header bar */}
+      <div className="flex items-center px-4 py-2 border-b border-[var(--color-border)] bg-[var(--color-surface-secondary)]">
+        <div className="flex items-center gap-1.5" aria-hidden="true">
+          <div className="w-2 h-2 rounded-full bg-primary/20"></div>
+          <div className="w-2 h-2 rounded-full bg-primary/20"></div>
+          <div className="w-2 h-2 rounded-full bg-primary/20"></div>
+        </div>
+        <span className="text-[11px] text-[var(--color-text-tertiary)] font-mono ml-2 select-none">gut.sh</span>
       </div>
 
-      <div>
-        <label htmlFor="decision-input" className="block text-xs font-medium text-[var(--color-text-tertiary)] mb-1.5 font-mono uppercase tracking-wider">
-          Decision
-        </label>
-        <input
-          id="decision-input"
-          ref={decisionInputRef}
-          type="text"
-          value={decisionText}
-          onChange={(e) => {
-            setDecisionText(e.target.value);
-            if (errors.decision) setErrors((prev) => ({ ...prev, decision: undefined }));
-          }}
-          onKeyDown={handleKeyDown}
-          placeholder="Your decision"
-          aria-label="Decision text"
-          aria-invalid={!!errors.decision}
-          className="w-full h-11 px-4 border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] bg-[var(--color-surface)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary hover:border-[var(--color-text-tertiary)] text-base"
-        />
+      {/* Terminal body */}
+      <div className="px-4 py-3 sm:px-5 sm:py-4 space-y-1">
+        {/* Decision prompt */}
+        <div className="flex items-center gap-2 min-h-[44px]">
+          <span className="text-primary font-mono text-sm select-none" aria-hidden="true">$</span>
+          <input
+            id="decision-input"
+            ref={decisionInputRef}
+            type="text"
+            value={decisionText}
+            onChange={(e) => {
+              setDecisionText(e.target.value);
+              if (errors.decision) setErrors((prev) => ({ ...prev, decision: undefined }));
+            }}
+            onKeyDown={handleKeyDown}
+            placeholder="your decision"
+            aria-label="Decision text"
+            aria-invalid={!!errors.decision}
+            className="w-full bg-transparent border-none text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none font-mono text-base"
+          />
+        </div>
+
         {errors.decision && (
-          <p className="text-primary text-xs mt-1.5 flex items-center gap-1" role="alert">
+          <p className="text-primary text-xs flex items-center gap-1 pl-5" role="alert">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
               <path d="M6 1v5M6 8.5h.005" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
             </svg>
             Decision is required
           </p>
         )}
-      </div>
 
-      <div>
-        <label htmlFor="prediction-input" className="block text-xs font-medium text-[var(--color-text-tertiary)] mb-1.5 font-mono uppercase tracking-wider">
-          Prediction
-        </label>
-        <input
-          id="prediction-input"
-          type="text"
-          value={predictionText}
-          onChange={(e) => {
-            setPredictionText(e.target.value);
-            if (errors.prediction) setErrors((prev) => ({ ...prev, prediction: undefined }));
-          }}
-          onKeyDown={handleKeyDown}
-          placeholder="What do you predict will happen?"
-          aria-label="Prediction text"
-          aria-invalid={!!errors.prediction}
-          className="w-full h-11 px-4 border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] bg-[var(--color-surface)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary hover:border-[var(--color-text-tertiary)] text-base"
-        />
+        {/* Prediction prompt */}
+        <div className="flex items-center gap-2 min-h-[44px]">
+          <span className="text-[var(--color-text-tertiary)] font-mono text-sm select-none" aria-hidden="true">{'>'}</span>
+          <input
+            id="prediction-input"
+            type="text"
+            value={predictionText}
+            onChange={(e) => {
+              setPredictionText(e.target.value);
+              if (errors.prediction) setErrors((prev) => ({ ...prev, prediction: undefined }));
+            }}
+            onKeyDown={handleKeyDown}
+            placeholder="what you predict will happen"
+            aria-label="Prediction text"
+            aria-invalid={!!errors.prediction}
+            className="w-full bg-transparent border-none text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none font-mono text-base"
+          />
+        </div>
+
         {errors.prediction && (
-          <p className="text-primary text-xs mt-1.5 flex items-center gap-1" role="alert">
+          <p className="text-primary text-xs flex items-center gap-1 pl-5" role="alert">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
               <path d="M6 1v5M6 8.5h.005" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
             </svg>
             Prediction is required
           </p>
         )}
-      </div>
 
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <label htmlFor="confidence-slider" className="text-xs font-medium text-[var(--color-text-tertiary)] font-mono uppercase tracking-wider">
-            Confidence
-          </label>
-          <span className={`text-sm font-bold font-mono ${confidenceColor}`} data-testid="confidence-value">
+        {/* Confidence */}
+        <div className="flex items-center gap-3 pt-3 mt-1 border-t border-[var(--color-border-subtle)]">
+          <span className="text-[11px] text-[var(--color-text-tertiary)] font-mono uppercase tracking-wider select-none">conf</span>
+          <input
+            id="confidence-slider"
+            type="range"
+            min="1"
+            max="10"
+            value={confidence}
+            onChange={(e) => setConfidence(Number(e.target.value))}
+            className="flex-1 h-1.5 accent-primary cursor-pointer"
+            aria-label="Confidence level"
+            aria-valuemin={1}
+            aria-valuemax={10}
+            aria-valuenow={confidence}
+          />
+          <span className={`text-xs font-bold font-mono ${confidenceColor}`} data-testid="confidence-value">
             {confidence}/10
           </span>
         </div>
-        <input
-          id="confidence-slider"
-          type="range"
-          min="1"
-          max="10"
-          value={confidence}
-          onChange={(e) => setConfidence(Number(e.target.value))}
-          className="w-full h-2 accent-primary cursor-pointer"
-          aria-label="Confidence level"
-          aria-valuemin={1}
-          aria-valuemax={10}
-          aria-valuenow={confidence}
-        />
-        <div className="flex justify-between mt-1">
-          <span className="text-[10px] text-[var(--color-text-tertiary)] font-mono">Low</span>
-          <span className="text-[10px] text-[var(--color-text-tertiary)] font-mono">High</span>
-        </div>
-      </div>
 
-      <div className="pt-2 border-t border-[var(--color-border-subtle)]">
-        <p className="text-xs text-[var(--color-text-tertiary)] font-mono flex items-center gap-2 flex-wrap">
-          <kbd className="inline-flex items-center px-1.5 py-0.5 bg-[var(--color-surface-secondary)] border border-[var(--color-border)] rounded text-[10px] font-mono text-[var(--color-text-secondary)] min-h-[20px]">Enter</kbd>
-          <span>to commit</span>
-          <span className="text-[var(--color-border)]" aria-hidden="true">·</span>
-          <kbd className="inline-flex items-center px-1.5 py-0.5 bg-[var(--color-surface-secondary)] border border-[var(--color-border)] rounded text-[10px] font-mono text-[var(--color-text-secondary)] min-h-[20px]">⌘G</kbd>
-          <span>to focus</span>
-        </p>
+        {/* Keyboard hints */}
+        <div className="pt-1">
+          <p className="text-[11px] text-[var(--color-text-tertiary)] font-mono flex items-center gap-1.5">
+            <kbd className="inline-flex items-center px-1 py-0.5 bg-[var(--color-surface-secondary)] border border-[var(--color-border)] rounded text-[10px] font-mono text-[var(--color-text-secondary)] min-h-[18px]">Enter</kbd>
+            <span>commit</span>
+            <span className="text-[var(--color-border)]" aria-hidden="true">·</span>
+            <kbd className="inline-flex items-center px-1 py-0.5 bg-[var(--color-surface-secondary)] border border-[var(--color-border)] rounded text-[10px] font-mono text-[var(--color-text-secondary)] min-h-[18px]">⌘G</kbd>
+            <span>focus</span>
+          </p>
+        </div>
       </div>
     </div>
   );

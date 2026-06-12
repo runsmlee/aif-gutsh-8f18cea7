@@ -30,7 +30,12 @@ function AppContent() {
       </header>
 
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10">
-        <section aria-label="Log a decision">
+        <section aria-label="Log a decision" className="space-y-3">
+          <p className="text-center text-xl sm:text-2xl font-bold font-mono text-[var(--color-text-primary)] leading-snug tracking-tight">
+            Every bold call is a hypothesis.{' '}
+            <span className="text-primary">Commit</span> it.{' '}
+            <span className="text-primary">Prove</span> it.
+          </p>
           <DecisionLogger />
         </section>
 
@@ -52,7 +57,7 @@ function AppContent() {
       <footer className="border-t border-[var(--color-border)] mt-12">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 text-center">
           <p className="text-xs text-[var(--color-text-tertiary)] font-mono">
-            gut.sh — commit your gut, track your accuracy
+            gut.sh
           </p>
         </div>
       </footer>
